@@ -202,7 +202,11 @@ foreach ($retrievedObjects as $obj) {
   $newContact["givenName"] = $obj["firstname"];
 
   if (!empty($obj["mailingcity"])) {
-    $newContact["l"] = $obj["mailingcity"];
+      $newContact["l"] = $obj["mailingcity"];
+      $newContact["physicalDeliveryOfficeName"] = $obj["mailingcity"];
+  }
+  if (!empty($obj["title"])) {
+    $newContact["title"] = $obj["title"];
   }
   if (!empty($obj["mailingstreet"])) {
     $newContact["street"] = $obj["mailingstreet"];
@@ -220,6 +224,9 @@ foreach ($retrievedObjects as $obj) {
   }
   if (!empty($obj["phone"])) {
     $newContact["telephoneNumber"] = $obj["phone"];
+  }
+  if (!empty($obj["otherphone"])) {
+    $newContact["otherTelephone"] = $obj["otherphone"];
   }
   if (!empty($obj["fax"])) {
     $newContact["facsimileTelephoneNumber"] = $obj["fax"];
