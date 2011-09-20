@@ -238,6 +238,7 @@ foreach ($retrievedObjects as $obj) {
   // Set the objectClasses for this contact needed for Zarafa
   $newContact["objectClass"][0] = "zarafa-contact";
   $newContact["objectClass"][1] = "inetorgperson";
+  $newContact["objectClass"][2] = "organizationalPerson";
 
   // Set uidNumber, uid and DN 
   $newContact["uidNumber"] = $uidNumber;
