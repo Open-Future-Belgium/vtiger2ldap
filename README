@@ -34,3 +34,19 @@ You can get the accesskey by logging on to vtiger as the user you would like to 
 
 - LDAP_UID_MIN (Minimum uidNumber for the synchronised contacts)
 - LDAP_UID_MAX (Maximum uidNumber for the synchronised contacts)
+
+Copy the included 'zarafa/ldap.propmap.cfg' to /etc/zarafa/ on your Zarafa server.
+Make sure the propmap gets loaded in /etc/zarafa/ldap.cfg
+
+2. Run
+------
+
+Run the script with:
+
+php /path/to/vtiger2ldap.php
+
+3. Put it in cron
+-----------------
+
+If you want to update the LDAP tree periodically put the command to run
+the script in crontab.
