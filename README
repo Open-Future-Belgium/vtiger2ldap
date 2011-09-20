@@ -1,0 +1,36 @@
+How to use Vtiger2Ldap
+----------------------
+
+The Vtiger2Ldap script can run on any server that can contact:
+
+- Vtiger through the webservices API
+- Your company LDAP server
+
+To be able to run this you will need:
+
+* php-cli
+* HTTP_Client (pear install HTTP_Client)
+* Zend Json (Included!)
+
+1. Configure
+------------
+
+Open 'include/config.php' and configure it to your needs, you will need to specify at least:
+
+- VTIGER_APIURL (The URL to your vtiger installation)
+- VTIGER_USERNAME
+- VTIGER_APIKEY (a.k.a. AccessKey)
+
+You can get the accesskey by logging on to vtiger as the user you would like to use, going to 'My Preferences' and copying the "Access Key" field.
+
+- LDAP_URI (IP or Hostname to your LDAP installation)
+- LDAP_BIND_DN (An LDAP user account to bind to LDAP with)
+- LDAP_BIND_PW (The LDAP bind password)
+
+- LDAP_SEARCH_DN (Your base DN)
+
+- LDAP_CONTACTS_OU (OU containing the contacts)
+- LDAP_USERS_OU (OU containing the users)
+
+- LDAP_UID_MIN (Minimum uidNumber for the synchronised contacts)
+- LDAP_UID_MAX (Maximum uidNumber for the synchronised contacts)
