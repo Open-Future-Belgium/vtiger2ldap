@@ -1,24 +1,28 @@
 <?php
+
 /*
  * Open-Future vtiger2ldap
- * PHP Code that gets vtiger contacts,
- * encodes them as LDIF data, and imports
- * into an LDAP tree.
+ * PHP Code that gets vtiger contacts using vtiger webservices API,
+ * and imports them into an LDAP tree.
  *
  * For use with Zarafa, or other software that can read out LDAP data.
  *
+ * For further information, and how to integrate with Zarafa, please see
+ * the included README file.
+ *
  * @AUTHOR Bert Deferme <bert@open-future.be> www.open-future.be
- * @LICENSE GPLv3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * @LICENSE GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  */
 
 /*
  * Do not edit anything in this file unless you know what you are doing.
- * Configuration is done in include/config.php
+ * Configuration is done in the 'include/config.php' file.
+ *
  */
 
-// Require the config.php (You can config Vtiger webservice URL, username, and API KEY here).
+// Require the config.php
+// Configured in this file: Vtiger Webservices Authentication information, LDAP information, E-mail information.
 require_once("include/config.php");
 
 // Requirements (HTTP_CLIENT, Zend framework(included))
@@ -37,14 +41,14 @@ if ($vauth->authed()) {
 
 // Initialise empty string to store contacts without accounts.
 // Searching on account information (Company Name) when the Vtiger contact
-// does not have an account makes this script crash. We now catch this
+// does not have an account makes this script crash. We now catch this,
 // store contacts without accounts, and send an e-mail about these contacts.
 $noAcc = "";
 
 // Get the vtiger webservices API url from the constant (config.php)
 $endpointUrl = VTIGER_APIURL;
 
-// First: get all vtiger contacts with webservices API
+// First: get total number of vtiger contacts
 $query = "select count(*) from Contacts;";
 $queryParam = urlencode($query);
 $params =  "sessionName=$sessionid&operation=query&query=$queryParam";
@@ -65,18 +69,17 @@ if($jsonResponse['success']==false)
 // faster searches and less load on the Vtiger server.
 $numContacts = $jsonResponse['result'][0]["count"];
 $start = 0;
-$end=0;
+$end = 0;
 
 // Get the vtiger webservices API url from the constant (config.php)
 $endpointUrl = VTIGER_APIURL;
 
-while ($end <= $numContacts) {
+while ($end <= $numContacts) { // while we still need to process contacts
 
 $end = $start + 30;
 
-print "Querying with start = $start and end = $end \n";
+// First: get all vtiger contacts with webservices API, limited by $start and $end
 
-// First: get all vtiger contacts with webservices API
 $query = "select * from Contacts limit $start, $end;";
 $queryParam = urlencode($query);
 $params =  "sessionName=$sessionid&operation=query&query=$queryParam";
