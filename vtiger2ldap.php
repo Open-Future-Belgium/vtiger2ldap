@@ -12,6 +12,7 @@
  *
  * @AUTHOR Bert Deferme <bert@open-future.be> www.open-future.be
  * @LICENSE GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
+ * @VERSION 1.0RC1
  *
  */
 
