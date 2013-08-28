@@ -70,18 +70,19 @@ if($jsonResponse['success']==false)
 // faster searches and less load on the Vtiger server.
 $numContacts = $jsonResponse['result'][0]["count"];
 $start = 0;
-$end = 0;
+$limit = 30;
+$end = $start + $limit;
 
 // Get the vtiger webservices API url from the constant (config.php)
 $endpointUrl = VTIGER_APIURL;
 
 while ($end <= $numContacts) { // while we still need to process contacts
 
-$end = $start + 30;
+$end = $start + $limit;
 
 // First: get all vtiger contacts with webservices API, limited by $start and $end
 
-$query = "select * from Contacts limit $start, $end;";
+$query = "select * from Contacts limit $start, $limit;";
 $queryParam = urlencode($query);
 $params =  "sessionName=$sessionid&operation=query&query=$queryParam";
 
@@ -114,7 +115,8 @@ foreach ($retrievedObjects as $obj) {
   if ($accountId == "") { 
     // Log details for sending an email
     $name=trim($obj["firstname"])." ".trim($obj["lastname"]);
-    $noAcc .= $name . "\n";
+    $desc="(".$obj["email"]." / ".$obj["contact_no"].")";
+    $noAcc .= $name ." ". $desc . "\n";
     print "[vtiger2ldap] Got contact ".$newContact["cn"].", without account, logging for email...\n";
     continue;
   }
@@ -227,7 +229,7 @@ foreach ($retrievedObjects as $obj) {
     $newContact["telephoneNumber"] = $obj["phone"];
   }
   if (!empty($obj["otherphone"])) {
-    $newContact["otherTelephone"] = $obj["otherphone"];
+    $newContact["pager"] = $obj["otherphone"];
   }
   if (!empty($obj["fax"])) {
     $newContact["facsimileTelephoneNumber"] = $obj["fax"];
@@ -244,7 +246,7 @@ foreach ($retrievedObjects as $obj) {
   // Set uidNumber, uid and DN 
   $newContact["uidNumber"] = $uidNumber;
   $newContact["uid"] = $obj["firstname"]." ".$obj["lastname"]; 
-  $myDn = 'cn='.$newContact["cn"].LDAP_CONTACTS_OU;
+  $myDn = 'cn='.$newContact["cn"].','.LDAP_CONTACTS_OU;
 
   print "[vtiger2ldap] Got contact ".$newContact["cn"].", proceeding with add/modify...\n";
 
@@ -288,6 +290,7 @@ foreach ($retrievedObjects as $obj) {
    
    // If we got here, there is no email set OR it does not exist on a user already
    // -> Add the contact in LDAP
+   var_dump($newContact);
    $r = ldap_add($ds, $myDn, $newContact);
 
    // The contact was added, raise the uidNumber for the next contact found.
@@ -301,8 +304,8 @@ foreach ($retrievedObjects as $obj) {
     $r = ldap_modify($ds, $myDn, $newContact);
     print "[vtiger2ldap] Contact $myDn exists, modifying...\n\n";
   }
-  $start++;
 }
+$start = $start + $limit;
 }
 
 // If contacts without an account are found, send an e-mail to the responsible person.
