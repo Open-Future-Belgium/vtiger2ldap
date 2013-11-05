@@ -290,7 +290,6 @@ foreach ($retrievedObjects as $obj) {
    
    // If we got here, there is no email set OR it does not exist on a user already
    // -> Add the contact in LDAP
-   var_dump($newContact);
    $r = ldap_add($ds, $myDn, $newContact);
 
    // The contact was added, raise the uidNumber for the next contact found.
