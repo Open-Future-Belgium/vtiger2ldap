@@ -57,5 +57,7 @@ cd /path/to/vtiger2ldap && /usr/bin/php /path/to/vtiger2ldap.php
 If you want to update the LDAP tree periodically put the command to run
 the script in crontab:
 
+```
 # This will run vtiger2ldap @ 7:00, 12:00 and 00:00, logging will go to /dev/null
 0 7,12,0 * * * cd /path/to/vtiger2ldap && /usr/bin/php /path/to/vtiger2ldap/vtiger2ldap.php > /dev/null
+```
